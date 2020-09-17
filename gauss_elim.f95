@@ -1,28 +1,15 @@
     program mat_inv_nxn
     implicit none
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!Programme to calculate the inverse of an NxN square matrix using the Gaussian elimination method.      !!!
-!!!Determinants can be calculated. The matrix equation Ax=b can be solved, giving the solution vector x.  !!!
-!!!A print of the LU decomposition i.e. L and U matrices, L^-1 matrix and the modified vector b is given. !!!
-!!!Sanity checks included to ensure accuracy and consistency.                                             !!!
-!!!As a SUBROUTINE - Input of (size)N, (matrix)A and (column vector)b required.                           !!!
-!!!A check of the tolerances may be needed. Check print out of matrices/vectors.                          !!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-!!!! GENERALISE TO NXM MATRICES OF ARBITRARY SIZE !!!!
-
-
     real*8, allocatable :: a(:,:), l(:,:), b(:), x(:), id(:,:), ainv(:,:)
     real*8, allocatable :: a_safe(:,:), b_safe(:), id_safe(:,:)
     real*8, allocatable :: check(:,:), checkvec(:)
     real*8 :: z, det, mult, temp, total, totalinv, gaussstart, gaussfinish
     integer :: i, j, k, N, piv, count
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!! DEFINING MATRIX (NXN) !!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!! DEFINING MATRIX (N X N) !!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
     print *, 'Enter dimension of square matrix'
@@ -31,20 +18,21 @@
     allocate(a(1:N,1:N),b(1:N),x(1:N),l(1:N,1:N),id(1:N,1:N),ainv(1:N,1:N))
     allocate(a_safe(1:N,1:N),b_safe(1:N),id_safe(1:N,1:N),check(1:N,1:N),checkvec(1:N))
 
-    a=0.0 ! matrix A - to be written over
-    a_safe=0.0 ! matrix A - saved version
-    l=0.0 ! lower triangular matrix L
-    id=0.0  ! identity matrix - to be written over
-    id_safe=0.0 ! identity matrix - saved version
-    ainv=0.0 ! inverse of matrix A
-    b=0.0 ! column vector - to be written over
-    b_safe=0.0 ! Saved column vector
-    x=0.0 ! Solution vector
-    check=0.0  ! matrix to check calculations
-    checkvec=0.0 ! vector to check solution
+    a=0.0           ! matrix A - to be written over
+    a_safe=0.0      ! matrix A - saved version
+    l=0.0           ! lower triangular matrix L
+    id=0.0          ! identity matrix - to be written over
+    id_safe=0.0     ! identity matrix - saved version
+    ainv=0.0        ! inverse of matrix A
+    b=0.0           ! column vector - to be written over
+    b_safe=0.0      ! Saved column vector
+    x=0.0           ! Solution vector
+    check=0.0       ! matrix to check calculations
+    checkvec=0.0    ! vector to check solution
 
+    ! Diagonal elements of L and identity matrix = 1 !
     do i=1, N
-        l(i,i)=1.0   ! Diagonal elements of L and identity matrix = 1 !
+        l(i,i)=1.0
         id(i,i)=1.0
         id_safe(i,i)=1.0
     end do
@@ -106,20 +94,20 @@
                 a(j,i)=temp
             end do
             do j=1, N
-                temp=a_safe(j,piv)      ! Bookkeeping to ensure consistency when column swaps occur !
+                temp=a_safe(j,piv)          ! Bookkeeping to ensure consistency when column swaps occur !
                 a_safe(j,piv)=a_safe(j,i)   ! Swaps columns so maximal value is on pivot !
                 a_safe(j,i)=temp
             end do
         end if
 
-        do j=i+1, N   !From row i+1 to row N i.e down column i!
-            mult=a(j,i)/a(i,i)    ! Elimination multiplier !
-            l(j,i)=mult     ! Lower triangular matrix elements !
-            do k=i, N  !from column i to N i.e. across row j !
+        do j=i+1, N                  ! From row i+1 to row N i.e down column i!
+            mult=a(j,i)/a(i,i)       ! Elimination multiplier !
+            l(j,i)=mult              ! Lower triangular matrix elements !
+            do k=i, N                ! from column i to N i.e. across row j !
                 a(j,k)=a(j,k)-mult*a(i,k)
             end do
             do k=1, N
-                id(j,k)=id(j,k)-mult*id(i,k) !!! Similar for identity matrix for calculation of a^-1 !!!
+                id(j,k)=id(j,k)-mult*id(i,k) ! Similar for identity matrix for calculation of a^-1 !
             end do
             b(j)=b(j)-mult*b(i)    ! Same multiplication operations to column vector b !
         end do
@@ -373,9 +361,6 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 104 continue
 
- !!!! ANY ADDITIONAL BANTER HERE !!!!
-
-
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!! FORMATTING !!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -383,5 +368,3 @@
 1000 format(1x, a, 1x, i2, a, 1x, i2, a)
 
     end program mat_inv_nxn
-
-
